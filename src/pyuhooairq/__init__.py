@@ -47,9 +47,9 @@ class Uhoo:
 
     def _get_uid(self):
         try:
-            response = self.session.get(url=Uhoo.URL_GET_UID)
+            response = self.session.get(url=self.URL_GET_UID)
             self.session.headers.update(
-                {Uhoo.UID_HEADER: response.json()["uId"]}
+                {self.UID_HEADER: response.json()["uId"]}
             )
         except requests.exceptions.RequestException as ex:
             print("HTTP Request failed: " + str(ex))
@@ -57,14 +57,14 @@ class Uhoo:
     def _get_client_code(self):
         try:
             response = self.session.post(
-                url=Uhoo.URL_GET_CLIENT_CODE,
+                url=self.URL_GET_CLIENT_CODE,
                 data={
                     "clientId": Uhoo.CLIENT_ID,
                     "username": self.username,
                 },
             )
             self.session.headers.update(
-                {Uhoo.CODE_HEADER: response.json()["code"]}
+                {self.CODE_HEADER: response.json()["code"]}
             )
         except requests.exceptions.RequestException as ex:
             print("HTTP Request failed: " + str(ex))
@@ -72,10 +72,10 @@ class Uhoo:
     def _renew_token(self):
         try:
             response = self.session.post(
-                url=Uhoo.URL_RENEW_TOKEN,
+                url=self.URL_RENEW_TOKEN,
                 data={
-                    "Token": self.session.headers.get(Uhoo.TOKEN_HEADER),
-                    "userDeviceId": Uhoo.CLIENT_ID,
+                    "Token": self.session.headers.get(self.TOKEN_HEADER),
+                    "userDeviceId": self.CLIENT_ID,
                 },
             )
             if response.status_code == 401:
@@ -84,7 +84,7 @@ class Uhoo:
             data = response.json()
             self.session.headers.update(
                 {
-                    Uhoo.TOKEN_HEADER: data["token"],
+                    self.TOKEN_HEADER: data["token"],
                     "Authorization": "Bearer " + data["refreshToken"],
                 }
             )
@@ -109,15 +109,15 @@ class Uhoo:
     def login(self):
         self._get_uid()
         self._get_client_code()
-        crypto = Crypto(self.session.headers.get(Uhoo.CODE_HEADER))
+        crypto = Crypto(self.session.headers.get(self.CODE_HEADER))
         pass_encrypted = crypto.encrypt(
-            self.session.headers.get(Uhoo.UID_HEADER), self.password
+            self.session.headers.get(self.UID_HEADER), self.password
         ).hex()
         try:
             response = self.session.post(
-                url=Uhoo.URL_LOGIN,
+                url=self.URL_LOGIN,
                 data={
-                    "clientId": Uhoo.CLIENT_ID,
+                    "clientId": self.CLIENT_ID,
                     "username": self.username,
                     "password": pass_encrypted,
                 }
@@ -125,7 +125,7 @@ class Uhoo:
             data = response.json()
             self.session.headers.update(
                 {
-                    Uhoo.TOKEN_HEADER: data["token"],
+                    self.TOKEN_HEADER: data["token"],
                     "Authorization": "Bearer " + data["refreshToken"],
                 }
             )

@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/pyuhooairq/__init__.py
+src/pyuhooairq/example.py
+src/pyuhooairq.egg-info/PKG-INFO
+src/pyuhooairq.egg-info/SOURCES.txt
+src/pyuhooairq.egg-info/dependency_links.txt
+src/pyuhooairq.egg-info/top_level.txt

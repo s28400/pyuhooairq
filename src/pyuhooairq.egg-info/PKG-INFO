@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: pyuhooairq
+Version: 0.0.1
+Summary: A python interface for uhoo air quality sensors.
+Home-page: https://github.com/s28400/pyuhooairq
+Author: Joshua Hess
+Author-email: josh@hessindustria.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/s28400/pyuhooairq/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# pyuhooairq
+
+Python interface for uhoo air quality sensors.
+More details coming soon.
+
