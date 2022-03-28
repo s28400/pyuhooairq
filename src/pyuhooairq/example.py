@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from pyuhooairq import Uhoo
 
-email = 'josh@hessindustria.com'
+email = 'email'
 password = 'pass'
 
 def main():
