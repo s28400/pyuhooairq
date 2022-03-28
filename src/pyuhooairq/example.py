@@ -12,7 +12,7 @@ def main():
     print(f'\nDevices: {device_list}')
 
     # Get latest data from particular device serial
-    airq_data = myuhoo.get_current_airq_data(device_serial="34ff6d064242353636201857")
+    airq_data = myuhoo.get_current_airq_data(device_serial="your_device_serial_number")
     print(f'\nData: {airq_data}')
 
 
