@@ -1,4 +1,4 @@
-import requests, hashlib
+import requests, hashlib, sys
 from urllib3.exceptions import InsecureRequestWarning
 from Crypto.Cipher import AES
 
@@ -16,10 +16,9 @@ class Uhoo:
     URL_RENEW_TOKEN = BASE_URL_AUTH + "renewusertoken"
     URL_GET_CLIENT_CODE = BASE_URL_AUTH + "verifyemail"
     CLIENT_ID = "85E7D9B2-4876-4E2C-BFB5-87FB4918A0E42"
-    # CACHE_FILE = "cache"
     USER_AGENT = "uHoo/9.1 (iPhone; XS; iOS 14.4; Scale/3.00)"
 
-    # these are for storing session info
+    # These are for storing session info
     UID_HEADER = "X-AIRQ-UID"
     CODE_HEADER = "X-AIRQ-CODE"
     TOKEN_HEADER = "X-AIRQ-TOKEN"
@@ -48,9 +47,13 @@ class Uhoo:
     def _get_uid(self):
         try:
             response = self.session.get(url=self.URL_GET_UID)
-            self.session.headers.update(
-                {self.UID_HEADER: response.json()["uId"]}
-            )
+            if response.status_code == 200:
+                self.session.headers.update(
+                    {self.UID_HEADER: response.json()["uId"]}
+                )
+            else:
+                print(f'Received bad response: {response.status_code}, get_uid failed.')
+                sys.exit(0)
         except requests.exceptions.RequestException as ex:
             print("HTTP Request failed: " + str(ex))
 
@@ -63,9 +66,13 @@ class Uhoo:
                     "username": self.username,
                 },
             )
-            self.session.headers.update(
-                {self.CODE_HEADER: response.json()["code"]}
-            )
+            if response.status_code == 200:
+                self.session.headers.update(
+                    {self.CODE_HEADER: response.json()["code"]}
+                )
+            else:
+                print(f'Received bad response: {response.status_code}, check credentials and try again.')
+                sys.exit(0)
         except requests.exceptions.RequestException as ex:
             print("HTTP Request failed: " + str(ex))
 
@@ -79,6 +86,7 @@ class Uhoo:
                 },
             )
             if response.status_code == 401:
+                print(f'Received bad response: {response.status_code}, renew token failed, logging in again.')
                 self.login()
                 return
             data = response.json()
@@ -122,13 +130,18 @@ class Uhoo:
                     "password": pass_encrypted,
                 }
             )
-            data = response.json()
-            self.session.headers.update(
+            if response.status_code == 200:
+                data = response.json()
+                self.session.headers.update(
                 {
                     self.TOKEN_HEADER: data["token"],
                     "Authorization": "Bearer " + data["refreshToken"],
                 }
             )
+            else:
+                print(f'Received bad response: {response.status_code}, check credentials and try again')
+                sys.exit(0)
+
         except requests.exceptions.RequestException as e:
             print("HTTP Request failed: " + str(e))
 
@@ -136,7 +149,7 @@ class Uhoo:
     def get_all_latest_data(self):
         return self._get_data(self.URL_GET_ALL_LATEST_DATA).json()
 
-    # Gets all latest data and returs device list with basic info
+    # Gets all latest data and returns device list with basic info
     def get_all_devices(self):
         response = self._get_data(self.URL_GET_ALL_LATEST_DATA).json()
         basic_info = {}
@@ -149,12 +162,14 @@ class Uhoo:
             device_list.append(basic_info)
         return device_list
 
+    # Gets latest data and returns raw data for specified device in json format
     def get_current_data(self, device_serial=None):
         response = self._get_data(self.URL_GET_ALL_LATEST_DATA).json()
         for device in response['data']:
             if device_serial == device['serialNumber']:
                 return device
 
+    # Gets latest data and returns formatted air quality data for specified device
     def get_current_airq_data(self, device_serial=None):
         data = self.get_current_data(device_serial=device_serial)
         airq_data = {}

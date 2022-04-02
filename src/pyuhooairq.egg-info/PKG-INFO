@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyuhooairq
-Version: 0.0.1
+Version: 1.0.0
 Summary: A python interface for uhoo air quality sensors.
 Home-page: https://github.com/s28400/pyuhooairq
 Author: Joshua Hess
