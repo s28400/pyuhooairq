@@ -4,7 +4,7 @@ import getpass
 
 
 def main():
-    print('Welcome to the pyhuooairq example script! This will demonstrate basic usage of the module.')
+    print('Welcome to the pyhuooairq example script!')
     email = input('Enter your uHoo account email: ')
     password = getpass.getpass('Password: ')
 
@@ -16,17 +16,21 @@ def main():
     if not len(device_list):
         print('No devices found with this account')
 
-    print('Found devices! Please copy a device serial number from the list:')
-    for device in device_list:
-        print(device)
+    print('Found devices! Please select a device from the list:')
+    while True:
+        print('\n')
+        pos = 1
+        for device in device_list:
+            print(f'{pos}. {device}')
+            pos+=1
 
-    serial_number = input('Please input device serial number to sample data: ')
+        device_number = int(input('Please select a device number: '))
 
-    # Get latest data from particular device serial
-    airq_data = myuhoo.get_current_airq_data(device_serial=serial_number)
-    print(f'\nData: {airq_data}')
+        serial_number = device_list[device_number-1]['serialNumber']
 
-    print('\nExample complete')
+        # Get latest data from particular device serial
+        airq_data = myuhoo.get_current_airq_data(device_serial=serial_number)
+        print(f'\nData: {airq_data}')
 
 
 if __name__ == "__main__":
